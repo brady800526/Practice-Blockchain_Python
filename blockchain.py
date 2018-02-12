@@ -28,7 +28,14 @@ class Blockchain(object):
 		"""
 
 		parsed_url = urlparse(address)
-		self.nodes.add(parsed_url.netloc)
+
+		if parsed_url.netloc:
+			self.nodes.add(parsed_url.netloc)
+		elif parsed_url.path:
+			# Accepts an URL without scheme like "192.168.0.5:5000"
+			self.nodes.add(parsed_url.path)
+		else:
+			raise ValueError("Invalid URL")
 
 	def valid_chain(self, chain):
 		"""
@@ -283,5 +290,12 @@ def consensus():
 	return jsonify(response), 200
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0', port=5000)
+	from argparse import ArgumentParser
+
+	parser = ArgumentParser()
+	parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
+	args = parser.parse_args()
+	port = args.port
+
+	app.run(debug=True, host='0.0.0.0', port=port)
 
