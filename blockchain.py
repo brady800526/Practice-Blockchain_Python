@@ -141,10 +141,6 @@ class Blockchain(object):
 
 		return self.last_block['index'] + 1
 
-	@property
-	def last_block(self):
-		return self.chain[-1]
-
 	@staticmethod
 	def hash(block):
 		"""
@@ -157,6 +153,10 @@ class Blockchain(object):
 		# We must make sure that the Dictionary is Ordered, or we'll have inconsistant hashes
 		block_string = json.dumps(block, sort_keys=True).encode()
 		return hashlib.sha256(block_string).hexdigest()
+
+	@property
+	def last_block(self):
+		return self.chain[-1]
 
 	def proof_of_work(self, last_proof):
 		"""
